@@ -1,6 +1,6 @@
 # SeedGimmick
 
-TODO: Write a gem description
+Database bootstrapping utilities for Rails.
 
 ## Installation
 
@@ -14,17 +14,14 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install seed_gimmick
-
 ## Usage
 
-TODO: Write usage instructions here
+    $ bundle exec rails generate seed_gimmick:install
+    $ bundle exec rake db:seed
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/seed_gimmick/fork )
+1. Fork it ( https://github.com/i2bskn/seed_gimmick/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
