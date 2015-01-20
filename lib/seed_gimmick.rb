@@ -13,6 +13,7 @@ require "seed_gimmick/inflector"
 require "seed_gimmick/finder"
 require "seed_gimmick/seed_io"
 require "seed_gimmick/seed_file"
+require "seed_gimmick/railtie" if defined?(Rails)
 
 module SeedGimmick
   def self.bootstrap!(options = nil)
