@@ -1,6 +1,6 @@
 module SeedGimmick
   class Options
-    %i(seed_dir).each do |key|
+    %i(seed_dir tables).each do |key|
       define_method "#{key}=" do |value|
         @options[key] = value
       end
@@ -12,6 +12,10 @@ module SeedGimmick
 
     def seed_dir
       @options[:seed_dir] || default_seed_dir
+    end
+
+    def tables
+      @options[:tables] || ENV["TABLES"].try(:split, ",") || []
     end
 
     private

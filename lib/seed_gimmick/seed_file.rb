@@ -1,8 +1,22 @@
 module SeedGimmick
   class SeedFile
-    include Finder
-
     attr_reader :inflector, :seed_file
+
+    class << self
+      def find(options = nil)
+        options ||= Options.new
+        seed_files(options.seed_dir).map {|file|
+          SeedFile.new(options.seed_dir, file)
+        }.select {|seed|
+          options.tables.empty? || options.tables.include?(seed.table_name)
+        }
+      end
+
+      private
+        def seed_files(seed_dir)
+          Pathname.glob(seed_dir.join("**", "*")).select(&:file?)
+        end
+    end
 
     def initialize(seed_dir, seed_file)
       @inflector = Inflector.new(seed_dir)
@@ -11,6 +25,10 @@ module SeedGimmick
 
     def load_file
       SeedIO.get(seed_file).load_data
+    end
+
+    def table_name
+      _model.model_name.plural
     end
 
     def bootstrap!
@@ -23,7 +41,7 @@ module SeedGimmick
         end
       end
     rescue LoadFailed => e
-      puts e.message
+      $stdout.print e.message
     end
 
     def custom_action
