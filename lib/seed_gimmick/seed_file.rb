@@ -2,6 +2,8 @@ module SeedGimmick
   class SeedFile
     attr_reader :inflector, :seed_file
 
+    EXCLUDE_COLUMNS = ["created_at", "updated_at"].freeze
+
     class << self
       def find(options = nil)
         options ||= Options.new
@@ -19,7 +21,7 @@ module SeedGimmick
     end
 
     def initialize(seed_dir, seed_file)
-      @inflector = Inflector.new(seed_dir)
+      @inflector = Inflector.build(seed_dir)
       @seed_file = seed_file
     end
 
@@ -27,31 +29,36 @@ module SeedGimmick
       SeedIO.get(seed_file).load_data
     end
 
-    def table_name
-      _model.model_name.plural
+    def write_file(array_of_hashes)
+      SeedIO.get(seed_file).dump_data(array_of_hashes)
     end
 
-    def bootstrap!
-      custom_action do |model, data|
-        ActiveRecord::Migration.say_with_time(model.model_name.plural) do
-          model.transaction do
-            model.delete_all
-            model.import(data.map {|rec| model.new(rec) })
-          end
+    def table_name
+      model.model_name.plural
+    end
+
+    def model
+      @_model ||= inflector.model_for(seed_file)
+    end
+
+    def bootstrap
+      ActiveRecord::Migration.say_with_time(table_name) do
+        model.transaction do
+          model.delete_all
+          model.import(data.map {|rec| _model.new(rec) })
         end
       end
     rescue LoadFailed => e
       $stdout.print e.message
     end
 
-    def custom_action
-      yield(_model, load_file) if block_given?
-    end
+    def dump
+      columns = model.column_names.select {|column_name|
+        !SeedFile::EXCLUDE_COLUMNS.include?(column_name)
+      }
 
-    private
-      def _model
-        @_model ||= inflector.model_for(seed_file)
-      end
+      write_file(model.select(*columns).map(&:attributes))
+    end
   end
 end
 

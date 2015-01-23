@@ -2,6 +2,11 @@ module SeedGimmick
   class Inflector
     attr_reader :seed_dir
 
+    def build(seed_dir = nil)
+      seed_dir ||= Options.new.seed_dir
+      new(seed_dir)
+    end
+
     def initialize(seed_dir)
       @seed_dir = seed_dir
     end

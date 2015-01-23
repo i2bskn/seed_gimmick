@@ -15,16 +15,24 @@ require "seed_gimmick/seed_file"
 require "seed_gimmick/railtie" if defined?(Rails)
 
 module SeedGimmick
-  def self.bootstrap!(options = nil)
-    SeedFile.find(options).each do |seed|
-      seed.bootstrap!
+  class << self
+    def bootstrap(options = nil)
+      SeedFile.find(options).each do |seed|
+        seed.bootstrap
+      end
     end
-  end
 
-  def self.seed_from(path)
-    path = Pathname.new(path.to_s) unless path.is_a?(Pathname)
-    options = Options.new(seed_dir: path)
-    bootstrap!(options)
+    def seed_from(path)
+      path = Pathname.new(path.to_s) unless path.is_a?(Pathname)
+      options = Options.new(seed_dir: path)
+      bootstrap(options)
+    end
+
+    def dump(options = nil)
+      options ||= Options.new
+      options.tables.each do |table|
+      end
+    end
   end
 end
 

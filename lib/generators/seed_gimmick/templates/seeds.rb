@@ -1,3 +1,3 @@
 # Bootstrap of SeedGimmick
-SeedGimmick.bootstrap!
+SeedGimmick.bootstrap
 

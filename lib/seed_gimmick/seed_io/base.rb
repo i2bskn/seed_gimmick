@@ -10,6 +10,10 @@ module SeedGimmick
       def load_data
         raise NotImplementedError
       end
+
+      def dump_data(array_of_hashes)
+        raise NotImplementedError
+      end
     end
   end
 end

@@ -20,7 +20,7 @@ module SeedGimmick
 
     private
       def default_seed_dir
-        (defined?(Rails) ? Rails.root : Pathname.pwd).join("db", "seeds")
+        (defined?(Rails) ? Rails.root : Pathname.pwd).join("db", "seed_gimmick")
       end
   end
 end
