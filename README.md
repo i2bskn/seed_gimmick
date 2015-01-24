@@ -16,8 +16,35 @@ And then execute:
 
 ## Usage
 
-    $ bundle exec rails generate seed_gimmick:install
-    $ bundle exec rake db:seed
+### Generate configuration file and default seed directory
+
+Run generator of Rails.  
+Configuration file created to `config/seed_gimmick.yml`.
+
+```
+$ bundle exec rails generate seed_gimmick:install
+      create  db/seed_gimmick/.keep
+      create  config/seed_gimmick.yml
+```
+
+### Rake tasks
+
+#### Apply fixtures
+
+Read fixtures from seed directory and apply to database.  
+All fixtures applied if not specified tables.
+
+```
+$ [TABLES=table_name,table_name] bundle exec rake db:seed_gimmick
+```
+
+#### Dump fixtures
+
+Dump to fixture file from database in seed directory.
+
+```
+$ MODELS=ModelName,ModelName bundle exec rake db:seed_gimmick:dump
+```
 
 ## Contributing
 
@@ -26,3 +53,4 @@ And then execute:
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+

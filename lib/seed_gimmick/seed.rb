@@ -64,7 +64,7 @@ module SeedGimmick
       $stdout.print e.message
     end
 
-    def dump(exclude_columns)
+    def dump(exclude_columns = [])
       write_file(model.select(*dump_columns(exclude_columns)).map(&:attributes))
     end
 
@@ -72,7 +72,6 @@ module SeedGimmick
       def self_validation!
         @model || @seed_file || (raise SeedGimmickError)
       end
-
   end
 end
 

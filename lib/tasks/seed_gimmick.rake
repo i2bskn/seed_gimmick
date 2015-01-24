@@ -10,3 +10,14 @@ namespace :db do
   end
 end
 
+namespace :seed_gimmick do
+  require "pp"
+
+  task :config do
+    pp SeedGimmick::Options.new.load_config
+  end
+
+  task :seed_files do
+    pp SeedGimmick::Seed.find.map {|seed| seed.seed_file.to_s }
+  end
+end
