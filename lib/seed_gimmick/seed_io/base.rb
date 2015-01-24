@@ -14,6 +14,12 @@ module SeedGimmick
       def dump_data(array_of_hashes)
         raise NotImplementedError
       end
+
+      private
+        def write_raw(data)
+          seed_file.dirname.mkpath
+          seed_file.open("w") {|f| f.write data }
+        end
     end
   end
 end

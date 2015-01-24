@@ -12,7 +12,7 @@ module SeedGimmick
           data[data_key(i)] = row
         end
 
-        seed_file.open("w") {|f| f.write data.to_yaml}
+        write_raw(data.to_yaml)
       end
 
       private

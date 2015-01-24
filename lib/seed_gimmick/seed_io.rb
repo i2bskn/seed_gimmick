@@ -3,11 +3,17 @@ require "seed_gimmick/seed_io/yaml_file"
 
 module SeedGimmick
   module SeedIO
-    def self.get(seed_file)
-      ext = File.extname(seed_file.to_s).presence || (raise SeedGimmickError)
-      ext.sub!(/\A\./, "")
-      ext = "yaml" if ext == "yml"
-      const_get("#{ext.capitalize}File", false).new(seed_file)
+    class << self
+      def get(seed_file)
+        const_get(io_class_name_for(seed_file), false).new(seed_file)
+      end
+
+      private
+        def io_class_name_for(seed_file)
+          ext = Inflector.pathname(seed_file).extname.sub(/\A\./, "")
+          ext = "yaml" if ext == "yml"
+          "%sFile" % ext.capitalize
+        end
     end
   end
 end
