@@ -15,11 +15,11 @@ module SeedGimmick
     end
 
     def initialize(options = {})
-      @options = options.symbolize_keys
+      @options = load_config.merge(options).symbolize_keys
     end
 
     def seed_dir
-      @options[:seed_dir] || default_seed_dir
+      root_dir.join(@options[:seed_dir] || default_seed_dir)
     end
 
     def tables
@@ -39,20 +39,40 @@ module SeedGimmick
     end
 
     def default_ext
-      @options[:default_ext] || ENV["FORMAT"] || :yml
+      @options[:default_ext] || ENV["FORMAT"] || "yml"
     end
 
     def exclude_columns
       @options[:exclude_columns] || default_exclude_columns
     end
 
+    def load_config
+      config.exist? ? YAML.load_file(config)[environment] : {}
+    end
+
+    def environment
+      ENV["RAILS_ENV"] || ENV["APP_ENV"] || default_env
+    end
+
     private
       def default_seed_dir
-        (defined?(Rails) ? Rails.root : Pathname.pwd).join("db", "seed_gimmick")
+        Pathname.new("db/seed_gimmick")
       end
 
       def default_exclude_columns
         ["created_at", "updated_at"]
+      end
+
+      def default_env
+        defined?(Rails) ? Rails.env : "development".inquiry
+      end
+
+      def config
+        root_dir.join("config", "seed_gimmick.yml")
+      end
+
+      def root_dir
+        defined?(Rails) ? Rails.root : Pathname.pwd
       end
   end
 end

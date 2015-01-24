@@ -1,0 +1,16 @@
+common: &common
+  seed_dir: db/seed_gimmick
+  default_ext: yml
+  exclude_columns:
+    - created_at
+    - updated_at
+
+development:
+  <<: *common
+
+test:
+  <<: *common
+
+production:
+  <<: *common
+
