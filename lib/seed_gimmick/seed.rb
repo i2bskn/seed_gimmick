@@ -39,6 +39,12 @@ module SeedGimmick
       model.model_name.plural
     end
 
+    def dump_columns(exclude_columns = [], all = false)
+      return model.column_names if all
+      exclude_columns = exclude_columns.presence || @options.exclude_columns
+      model.column_names - exclude_columns
+    end
+
     def load_file
       SeedIO.get(seed_file).load_data
     end
@@ -58,15 +64,15 @@ module SeedGimmick
       $stdout.print e.message
     end
 
-    def dump
-      columns = model.column_names - ["created_at", "updated_at"]
-      write_file(model.select(*columns).map(&:attributes))
+    def dump(exclude_columns)
+      write_file(model.select(*dump_columns(exclude_columns)).map(&:attributes))
     end
 
     private
       def self_validation!
         @model || @seed_file || (raise SeedGimmickError)
       end
+
   end
 end
 
