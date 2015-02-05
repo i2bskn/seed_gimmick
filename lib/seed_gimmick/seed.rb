@@ -1,3 +1,5 @@
+require "seed_gimmick/seed/difference"
+
 module SeedGimmick
   class Seed
     class << self
@@ -46,11 +48,11 @@ module SeedGimmick
     end
 
     def load_file
-      SeedIO.get(seed_file).load_data
+      SeedIO.factory(seed_file).load_data
     end
 
     def write_file(array_of_hashes)
-      SeedIO.get(seed_file).dump_data(array_of_hashes)
+      SeedIO.factory(seed_file).dump_data(array_of_hashes)
     end
 
     def bootstrap
@@ -66,6 +68,10 @@ module SeedGimmick
 
     def dump(exclude_columns = [])
       write_file(model.select(*dump_columns(exclude_columns)).map(&:attributes))
+    end
+
+    def compare
+      Difference.extraction(self)
     end
 
     private

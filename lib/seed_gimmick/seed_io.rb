@@ -4,7 +4,7 @@ require "seed_gimmick/seed_io/yaml_file"
 module SeedGimmick
   module SeedIO
     class << self
-      def get(seed_file)
+      def factory(seed_file)
         const_get(io_class_name_for(seed_file), false).new(seed_file)
       end
 
