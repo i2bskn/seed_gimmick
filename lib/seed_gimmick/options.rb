@@ -1,11 +1,11 @@
 module SeedGimmick
   class Options
     VALID_OPTIONS_KEYS = %i(
-    seed_dir
-    tables
-    models
-    default_ext
-    exclude_columns
+      seed_dir
+      tables
+      models
+      default_ext
+      exclude_columns
     ).freeze
 
     VALID_OPTIONS_KEYS.each do |key|

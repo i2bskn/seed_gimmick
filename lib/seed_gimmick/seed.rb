@@ -37,6 +37,10 @@ module SeedGimmick
       @seed_file ||= @inflector.seed_for(@model, (ext || @options.default_ext))
     end
 
+    def seed_io
+      @seed_io ||= SeedIO.factory(seed_file)
+    end
+
     def table_name
       model.model_name.plural
     end
@@ -48,11 +52,11 @@ module SeedGimmick
     end
 
     def load_file
-      SeedIO.factory(seed_file).load_data
+      seed_io.values
     end
 
     def write_file(array_of_hashes)
-      SeedIO.factory(seed_file).dump_data(array_of_hashes)
+      seed_io.dump_data(array_of_hashes)
     end
 
     def bootstrap
