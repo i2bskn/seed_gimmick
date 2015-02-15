@@ -26,6 +26,16 @@ module SeedGimmick
         Seed.new(model_name, options).dump
       end
     end
+
+    def diff(options = nil)
+      SeedGimmick::Seed.find(options).each do |seed|
+        ActiveRecord::Migration.say_with_time(seed.table_name) do
+          seed.compare.each do |changed|
+            puts [changed.flag, changed.id, changed.change_values].join("\t")
+          end
+        end
+      end
+    end
   end
 end
 

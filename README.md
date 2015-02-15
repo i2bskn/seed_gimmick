@@ -43,7 +43,15 @@ $ [TABLES=table_name,table_name] bundle exec rake db:seed_gimmick
 Dump to fixture file from database in seed directory.
 
 ```
-$ MODELS=ModelName,ModelName bundle exec rake db:seed_gimmick:dump
+$ MODELS=ModelName,ModelName [FORMAT=csv] bundle exec rake db:seed_gimmick:dump
+```
+
+#### Diff
+
+Display the database and seed difference.
+
+```
+$ bundle exec rake seed_gimmick:diff
 ```
 
 ## Contributing
