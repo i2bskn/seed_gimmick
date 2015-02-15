@@ -23,6 +23,7 @@ module SeedGimmick
 
       def dump_data(array_of_hashes)
         write_raw(self.class.raw_data(array_of_hashes))
+        array_of_hashes.size
       end
     end
   end

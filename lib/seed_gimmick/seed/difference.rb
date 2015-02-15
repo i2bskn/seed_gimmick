@@ -1,40 +1,79 @@
 module SeedGimmick
   class Seed
     class Difference
-      attr_reader :type, :record, :changes
+      include Enumerable
+
+      attr_reader :changes
+
+      module Flag
+        DATABASE = "-"
+        SEED = "+"
+        CHANGE = "<>"
+      end
 
       class << self
         def extraction(seed)
           pk = seed.model.primary_key
-          rows = seed.model.all.group_by {|row| row.public_send(pk) }
-          load_file.map {|loaded|
-            attrs = loaded.dup
-            id = attrs.delete(pk)
-            if row = Array(rows.fetch(id, nil)).first
-              row.assign_attributes(attrs)
-              row.changed? ? data_hash(row) : nil
-            else
-              data_hash(loaded)
-            end
-          }.compact.map {|diff| new(diff) }
-        end
-
-        private
-          def data_hash(row_or_hash)
-            type = row_or_hash.is_a?(Hash) ? :new : :exist
-            changes = row_or_hash.is_a?(Hash) ? row_or_hash : row_or_hash.changes
-            {
-              type: type,
-              record: type == :exist ? row_or_hash : nil,
-              changes: changes
-            }
+          database = seed.model.all.each_with_object({}) {|row, obj|
+            obj[row.public_send(pk)] = row
+          }
+          seed_data = seed.seed_io.values.each_with_object({}) {|row, obj|
+            obj[row[pk].to_i] = row
+          }
+          diff = []
+          (database.keys - seed_data.keys).each do |id|
+            diff << [Flag::DATABASE, id, database.delete(id), nil, nil]
           end
+          (seed_data.keys - database.keys).each do |id|
+            diff << [Flag::SEED, id, nil, seed_data.delete(id), nil]
+          end
+          database.each do |id, row|
+            s_attrs = seed_data[id].dup
+            s_attrs.delete(pk)
+            row.assign_attributes(s_attrs)
+            if row.changed?
+              changes = row.changes
+              changes.each {|k,(old,_)| row.public_send("#{k}=", old) }
+              diff << [Flag::CHANGE, id, row, seed_data.delete(id), changes]
+            end
+          end
+          new(diff)
+        end
       end
 
       def initialize(diff)
-        @type = diff[:type]
-        @record = diff[:record]
-        @changes = diff[:changes]
+        @changes = diff.sort_by(&:second).map {|d| Change.new(*d) }
+      end
+
+      def changed?
+        !@changes.empty?
+      end
+
+      def each
+        @changes.each do |change|
+          yield change
+        end
+      end
+
+      class Change < Struct.new(:flag, :id, :database, :seed_data, :changes)
+        EXCLUDES = [
+          "created_at",
+          "updated_at"
+        ].freeze
+
+        def change_values
+          changes.presence || changes_from_data
+        end
+
+        private
+          def changes_from_data
+            if database
+              attrs = database.attributes
+              attrs.reject! {|k,_| EXCLUDES.include?(k) } || attrs
+            else
+              seed_data
+            end
+          end
       end
     end
   end

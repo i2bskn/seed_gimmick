@@ -26,6 +26,7 @@ module SeedGimmick
 
       # Data dump to seed file.
       # @param array_of_hashes [Array<Hash>]
+      # @return [Integer] number of dump data.
       def dump_data(array_of_hashes)
         raise NotImplementedError
       end

@@ -51,27 +51,24 @@ module SeedGimmick
       model.column_names - exclude_columns
     end
 
-    def load_file
-      seed_io.values
-    end
-
-    def write_file(array_of_hashes)
-      seed_io.dump_data(array_of_hashes)
-    end
-
     def bootstrap
       ActiveRecord::Migration.say_with_time(table_name) do
         model.transaction do
           model.delete_all
-          model.import(load_file.map {|hash| model.new(hash) })
+          model.import(seed_io.values.map {|hash| model.new(hash) })
         end
+        seed_io.values.size
       end
     rescue LoadFailed => e
       $stdout.print e.message
     end
 
     def dump(exclude_columns = [])
-      write_file(model.select(*dump_columns(exclude_columns)).map(&:attributes))
+      ActiveRecord::Migration.say_with_time(table_name) do
+        seed_io.dump_data(
+          model.select(*dump_columns(exclude_columns)).map(&:attributes)
+        )
+      end
     end
 
     def compare
