@@ -3,8 +3,7 @@ module SeedGimmick
 
   class LoadFailed < SeedGimmickError
     def initialize(seed_file)
-      super("Can not load: #{seed_file.to_s}")
+      super("Can not load: #{seed_file}")
     end
   end
 end
-

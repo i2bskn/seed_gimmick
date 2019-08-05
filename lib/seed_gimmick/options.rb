@@ -55,6 +55,7 @@ module SeedGimmick
     end
 
     private
+
       def default_seed_dir
         Pathname.new("db/seed_gimmick")
       end
@@ -76,4 +77,3 @@ module SeedGimmick
       end
   end
 end
-

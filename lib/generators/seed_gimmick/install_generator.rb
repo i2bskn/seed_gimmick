@@ -15,4 +15,3 @@ module SeedGimmick
     end
   end
 end
-

@@ -8,7 +8,7 @@ module SeedGimmick
 
       def load_data
         data = CSV.read(seed_file, headers: :first_row).map(&:to_hash) ||
-          (raise LoadFailed.new(seed_file))
+          (raise LoadFailed.new(seed_file), "load failed: #{seed}")
         set_data(data)
         self
       end
@@ -20,4 +20,3 @@ module SeedGimmick
     end
   end
 end
-

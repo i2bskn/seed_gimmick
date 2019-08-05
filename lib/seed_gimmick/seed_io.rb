@@ -32,6 +32,7 @@ module SeedGimmick
       end
 
       private
+
         # Convert seed_file path to IO class name.
         # @param seed_file [Pathname]
         # @return [String] Target IO class name.
@@ -41,4 +42,3 @@ module SeedGimmick
     end
   end
 end
-

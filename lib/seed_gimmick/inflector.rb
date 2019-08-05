@@ -33,7 +33,7 @@ module SeedGimmick
       # Extension type.
       # @return [Symbol]
       def ext_type(path)
-        pathname(path).extname.sub(/\A./, '').to_sym
+        pathname(path).extname.sub(/\A./, "").to_sym
       end
     end
 
@@ -58,6 +58,7 @@ module SeedGimmick
     end
 
     private
+
       # Convert lerative path from seed_dir.
       def from_seed_dir(path)
         path = pathname(path)
@@ -69,4 +70,3 @@ module SeedGimmick
       end
   end
 end
-

@@ -16,7 +16,7 @@ module SeedGimmick
       end
 
       def load_data
-        data = YAML.load_file(seed_file) || (raise LoadFailed.new(seed_file))
+        data = YAML.load_file(seed_file) || (raise LoadFailed.new(seed_file), "load failed: #{seed_file}")
         set_data(data.values)
         self
       end
@@ -28,4 +28,3 @@ module SeedGimmick
     end
   end
 end
-

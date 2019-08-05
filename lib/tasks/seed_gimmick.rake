@@ -1,3 +1,5 @@
+require "pp"
+
 namespace :db do
   task :seed_gimmick => :environment do
     SeedGimmick.bootstrap
@@ -11,18 +13,15 @@ namespace :db do
 end
 
 namespace :seed_gimmick do
-  require "pp"
-
   task :config do
     pp SeedGimmick::Options.new.load_config
   end
 
   task :seed_files do
-    pp SeedGimmick::Seed.find.map {|seed| seed.seed_file.to_s }
+    pp SeedGimmick::Seed.find.map { |seed| seed.seed_file.to_s }
   end
 
   task :diff => :environment do
     SeedGimmick.diff
   end
 end
-

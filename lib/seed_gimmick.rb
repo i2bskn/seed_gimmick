@@ -17,7 +17,7 @@ require "seed_gimmick/railtie" if defined?(Rails)
 module SeedGimmick
   class << self
     def bootstrap(options = nil)
-      Seed.find(options).each {|seed| seed.bootstrap }
+      Seed.find(options).each(&:bootstrap)
     end
 
     def dump(options = nil)
@@ -38,4 +38,3 @@ module SeedGimmick
     end
   end
 end
-
