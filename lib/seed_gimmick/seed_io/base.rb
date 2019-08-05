@@ -10,7 +10,7 @@ module SeedGimmick
         define_method "#{key}_with_load_if_not_data" do
           public_send("#{key}_without_load_if_not_data") || load_data[key]
         end
-        alias_method_chain key, :load_if_not_data
+        #alias_method_chain key, :load_if_not_data
       end
 
       # @param seed_file [Pathname]
