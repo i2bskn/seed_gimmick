@@ -1,5 +1,7 @@
 # SeedGimmick
 
+[![Gem Version](https://badge.fury.io/rb/seed_gimmick.svg)](https://badge.fury.io/rb/seed_gimmick)
+
 Database bootstrapping utilities for Rails.
 
 ## Installation

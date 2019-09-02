@@ -4,7 +4,6 @@ require "pathname"
 
 require "active_support"
 require "active_record"
-require "activerecord-import"
 
 require "seed_gimmick/version"
 require "seed_gimmick/errors"
