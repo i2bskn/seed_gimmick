@@ -15,24 +15,7 @@ require "seed_gimmick/seed"
 module SeedGimmick
   class << self
     def bootstrap(options = nil)
-      Seed.find(options).each(&:bootstrap)
-    end
-
-    def dump(options = nil)
-      options ||= Options.new
-      options.models.each do |model_name|
-        Seed.new(model_name, options).dump
-      end
-    end
-
-    def diff(options = nil)
-      SeedGimmick::Seed.find(options).each do |seed|
-        ActiveRecord::Migration.say_with_time(seed.table_name) do
-          seed.compare.each do |changed|
-            puts [changed.flag, changed.id, changed.change_values].join("\t")
-          end
-        end
-      end
+      SeedGimmick::Seed.find(options).each(&:bootstrap)
     end
   end
 end

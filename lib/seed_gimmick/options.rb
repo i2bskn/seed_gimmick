@@ -3,7 +3,6 @@ module SeedGimmick
     VALID_OPTIONS_KEYS = %i(
       seed_dir
       tables
-      models
       default_ext
       exclude_columns
     ).freeze
@@ -15,7 +14,7 @@ module SeedGimmick
     end
 
     def initialize(options = {})
-      @options = load_config.merge(options).symbolize_keys
+      @options = options.symbolize_keys
     end
 
     def seed_dir
@@ -30,24 +29,12 @@ module SeedGimmick
       tables.presence || (raise SeedGimmickError)
     end
 
-    def models
-      @options[:models] || ENV["MODELS"].try(:split, ",") || []
-    end
-
-    def models!
-      models.presence || (raise SeedGimmickError)
-    end
-
     def default_ext
-      @options[:default_ext] || ENV["FORMAT"] || "yml"
+      @options[:default_ext] || ENV["FORMAT"] || "json"
     end
 
     def exclude_columns
-      @options[:exclude_columns] || default_exclude_columns
-    end
-
-    def load_config
-      config.exist? ? YAML.load_file(config)[environment] : {}
+      @options[:exclude_columns] ||= default_exclude_columns
     end
 
     def environment
@@ -57,7 +44,7 @@ module SeedGimmick
     private
 
       def default_seed_dir
-        Pathname.new("db/seed_gimmick")
+        root_dir.join("db", "seeds")
       end
 
       def default_exclude_columns
@@ -66,10 +53,6 @@ module SeedGimmick
 
       def default_env
         defined?(Rails) ? Rails.env : "development".inquiry
-      end
-
-      def config
-        root_dir.join("config", "seed_gimmick.yml")
       end
 
       def root_dir

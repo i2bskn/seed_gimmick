@@ -1,15 +1,12 @@
-require "seed_gimmick/seed/difference"
-
 module SeedGimmick
   class Seed
     class << self
       def find(options = nil)
         options ||= Options.new
-        seed_files(options).map { |file|
-          new(file, options)
-        }.select { |seed|
-          options.tables.empty? || options.tables.include?(seed.table_name)
-        }
+        seed_files = seed_files(options).map { |file| new(file, options) }
+        return seed_files if options.tables.empty?
+
+        seed_files.select { |seed| options.tables.include?(seed.table_name) }
       end
 
       private
@@ -45,33 +42,16 @@ module SeedGimmick
       model.model_name.plural
     end
 
-    def dump_columns(exclude_columns = [], all = false)
-      return model.column_names if all
-
-      exclude_columns = exclude_columns.presence || @options.exclude_columns
-      model.column_names - exclude_columns
-    end
-
     def bootstrap
       ActiveRecord::Migration.say_with_time(table_name) do
         model.transaction do
           model.delete_all
-          model.import(seed_io.values.map { |hash| model.new(hash) })
+          model.bulk_insert(seed_io.values.map { |hash| model.new(hash) })
         end
         seed_io.values.size
       end
     rescue LoadFailed => e
       $stdout.print e.message
-    end
-
-    def dump(exclude_columns = [])
-      ActiveRecord::Migration.say_with_time(table_name) do
-        seed_io.dump_data(model.select(*dump_columns(exclude_columns)).map(&:attributes))
-      end
-    end
-
-    def compare
-      Difference.extraction(self)
     end
 
     private
