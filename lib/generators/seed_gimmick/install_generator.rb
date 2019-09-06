@@ -1,16 +1,16 @@
 module SeedGimmick
   module Generators
     class InstallGenerator < ::Rails::Generators::Base
-      source_root File.expand_path(File.join(File.dirname(__FILE__), "templates"))
+      source_root File.expand_path("templates", __dir__)
 
       desc "Create seed_dir of SeedGimmick."
       def create_seed_dir
-        create_file File.join("db", "seed_gimmick", ".keep")
+        create_file File.join("db", "seeds", ".keep")
       end
 
       desc "Create config file of SeedGimmick."
       def create_config_file
-        template "seed_gimmick.yml", "config/seed_gimmick.yml"
+        append_to_file File.join("db", "seeds.rb"), "SeedGimmick.bootstrap"
       end
     end
   end
